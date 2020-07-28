@@ -1,0 +1,14 @@
+.NameIndicator {
+    display: inline-flex;
+    width: auto;
+    justify-content: baseline;
+    align-self: start;
+    margin: 10px;
+    font-family: SF Pro Text;
+    text-align: left;
+    font-weight: normal;
+    letter-spacing: 0.15px;
+    border:1px solid #6e6e6e;
+    color: #2F80ED;
+    cursor: pointer;
+}
