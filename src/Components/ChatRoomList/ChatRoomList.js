@@ -1,4 +1,10 @@
 import React, {Component} from 'react'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux';
+import { 
+    CreateRoom,
+} from '../../sockets.js'
+import NamePopUp from '../NamePopUp/NamePopUp.js'
 import './ChatRoomList.scss'
 
 /**
@@ -13,37 +19,55 @@ const _ = require('lodash');
 class ChatRoomList extends Component {
     constructor(props) {
         super(props)
-        this.RoomList = this.props.ChatRoomList
         this.CreateNewRoom = this.CreateNewRoom.bind(this)
+        this.VisibleNamePopUp = this.VisibleNamePopUp.bind(this)
     }
 
-    CreateNewRoom = (RoomName) => {
-        const { dispatch } = this.props
-        dispatch({type: 'CREATE_NEW_ROOM', RoomName})
+    CreateNewRoom = (roomName) => {
+        if (!!roomName) CreateRoom(roomName, this.props.CurrentUser)
+        else this.OpenNamePopUp(false)
     }
+
+    VisibleNamePopUp = (isVisible) => {
+        const { dispatch } = this.props;
+        dispatch({ type: 'VISIBLE_NAMEPOPUP', PopUpVisible: isVisible});
+   }
 
     render() {
-        const NewRoomButton = 
-        <div className = 'Room'>
-            <h3>Add new room</h3>
-            <img src='../../../Data/ButtonAddNew.png'/>
-        </div>
-        let Rooms = null;
-        if (!_.isEmpty(this.RoomList)) {
-            Rooms = this.RoomList.map((room) => 
-                <div className = 'Room'>
-                    <h3>{room.Name}</h3>
-                    <span>{room.Users.length} Members</span>
-                </div>
+        let rooms = null;
+        let popUp = this.props.PopUpVisible ? <NamePopUp showCancel = {true} HandleNameChange = {this.CreateNewRoom}/> : null
+        const newRoomButton = 
+            <div className = 'Room' onClick = {() => this.VisibleNamePopUp(true)}>
+                <h3>Add new room</h3>
+                <img src='../../../Data/ButtonAddNew.png'/>
+            </div>
+
+        if (!_.isEmpty(this.props.Rooms)) {
+            let key = 0
+            rooms = this.props.Rooms.map((room) => 
+                <Link to={'/' + room.Name} key= {++key}>
+                    <div className = 'Room' >
+                        <h3>{room.Name}</h3>
+                        <span>{room.Members.length} Members</span>
+                    </div>
+                </Link>
             )
         }
             
         return (
             <div className = 'RoomList'>
-                {Rooms}
-                {NewRoomButton}
+                {rooms}
+                {newRoomButton}
+                {popUp}
             </div>
         )   
     }
 }
-export default ChatRoomList;
+
+const mapStateToProps = state => ({
+    PopUpVisible: state.PopUpVisible,
+    Rooms: state.Rooms,
+    CurrentUser: state.User
+})
+
+export default connect(mapStateToProps)(ChatRoomList)

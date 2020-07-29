@@ -1,7 +1,13 @@
 import React, {Component} from 'react'
+import { connect } from 'react-redux';
 import './NamePopUp.scss'
 
-
+/*Universal popup window
+IN: HandleNameChange() method
+    showCancel bool
+OUT: newName
+if chosen name is cannot be taken you will receive error message
+*/
 class NamePopUp extends Component {
     constructor(props) {
         super(props)
@@ -19,12 +25,14 @@ class NamePopUp extends Component {
     }
 
     render() {
-        let CancelButton = !!this.props.Name ? <button onClick = {() => this.HandleButtonClick('cancel')}>Cancel</button> : null
+        let CancelButton = this.props.showCancel ? <button onClick = {() => this.HandleButtonClick('cancel')}>Cancel</button> : null
+        let errorMessage = !!this.props.ErrorMessage ? null : <div>{this.props.ErrorMessage}</div>
         return (
             <div className = "modal">
                 <div className='NamePopUp'>
-                    <h3>Enter your name</h3>
+                    <h3>Choose a name</h3>
                     <input type='text' maxLength="20" onChange = {this.InputChange}/>
+                    {errorMessage}
                     <div>
                         <button onClick = {() => this.HandleButtonClick('accept')}>Accept</button>
                         {CancelButton}
@@ -34,4 +42,9 @@ class NamePopUp extends Component {
         )   
     }
 }
-export default NamePopUp;
+
+const mapStateToProps = state => ({
+    ErrorMessage: state.Error
+})
+
+export default connect(mapStateToProps)(NamePopUp)

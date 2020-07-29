@@ -19,12 +19,16 @@ const configureSocket = dispatch => {
     dispatch({type: 'USER_CREATED_FROM_LINK', user: user, room: room})
   })
 
-  socket.on('ROOM_CREATED', room => {
-    dispatch({type: 'ROOM_UPDATE', room: room})
+  socket.on('ROOM_CREATED', (room, rooms) => {
+    dispatch({type: 'ROOM_CREATED', room: room, rooms: rooms})
   })
 
   socket.on('ROOM_REJECTED', error => {
     dispatch({type: 'ROOM_REJECTED', error: error})
+  })
+
+  socket.on('NEW_ROOM', rooms => {
+    dispatch({type: 'ALL_ROOMS_UPDATE', rooms: rooms})
   })
 
   socket.on('NEW_USER_IN_ROOM', room => {
@@ -56,7 +60,7 @@ export const CreateUser = (name) => socket.emit('CREATING_USER', name)
 
 export const CreateUserInRoom = (name, roomName) => socket.emit('USER_FOLLOWING_LINK', name, roomName)
 
-export const CreateRoom = (roomName) => socket.emit('CREATING_ROOM', roomName)
+export const CreateRoom = (roomName, user) => socket.emit('CREATING_ROOM', roomName, user)
 
 export const EnterRoom = (user, roomName) => socket.emit('USER_ENTERING_ROOM', user, roomName)
 
