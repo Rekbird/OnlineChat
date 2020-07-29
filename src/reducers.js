@@ -1,25 +1,36 @@
-import { socket } from './index.js';
+import { socket } from './index.js'
 
 const reducer = (
   state = {
     Name: null,
-    PopUpOpen: true
+    PopUpOpen: true,
+    Error: null,
+    User: null,
+    Rooms: [],
+    Room: null
   },
   action
 ) => {
   switch (action.type) {
-    case 'ASSIGNED_USERNAME':
-      state = { ...state, Name: action.Name };
-      socket && socket.emit('NEW_USER', state.Name)
-      break;
+    case 'USER_CREATED':
+      state = { ...state, 
+        User: action.user, 
+        Name: action.user.Name,
+        Rooms: action.rooms,
+        PopUpOpen: false
+      }
+      break
+    case 'USERNAME_REJECTED': 
+      state = { ...state, Error: action.error}
+      break
     case 'OPEN_NAMEPOPUP':
-      state = { ...state, PopUpOpen: action.PopUpOpen };
-      break;
+      state = { ...state, PopUpOpen: action.PopUpOpen }
+      break
     default:
-      break;
+      break
   }
 
-  return state;
+  return state
 };
 
-export default reducer;
+export default reducer

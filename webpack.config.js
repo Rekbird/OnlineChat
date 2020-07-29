@@ -66,6 +66,6 @@ module.exports = {
       new MiniCssExtractPlugin({filename: "style.css",})
     ],
     devServer: {
-      port: 3000
+      port: 8000
     }
 };

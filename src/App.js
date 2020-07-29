@@ -1,8 +1,17 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux';
+import { 
+    CreateUser,
+    CreateUserInRoom,
+    CreateRoom,
+    EnterRoom,
+    LeaveRoom,
+    SendMessage
+} from './sockets.js'
 import './App.scss'
 import NamePopUp from './Components/NamePopUp/NamePopUp.js';
 import NameIndicator from './Components/NameIndicator/NameIndicator.js'
+import ChatRoomList from './Components/ChatRoomList/ChatRoomList.js'
 
 class Application extends Component {
     constructor(props) {
@@ -11,12 +20,10 @@ class Application extends Component {
         this.OpenNamePopUp = this.OpenNamePopUp.bind(this)
     }
 
-    HandleNameChange = (Name) => {
-        const { dispatch } = this.props;
-        if (!!Name) {
-            dispatch({ type: 'ASSIGNED_USERNAME', Name });
+    HandleNameChange = (name) => {
+        if (!!name) {
+            CreateUser(name);
         }
-        this.OpenNamePopUp(false)
    }
 
    OpenNamePopUp = (isOpen) => {
@@ -25,12 +32,15 @@ class Application extends Component {
    }
 
     render() {
-        let PopUp = this.props.PopUpOpen ? <NamePopUp Open = {this.PopUpOpen} Name = {this.props.Name} HandleNameChange = {this.HandleNameChange}/> : null
+        let popUp = this.props.PopUpOpen ? <NamePopUp name = {this.props.Name} HandleNameChange = {this.HandleNameChange}/> : null
+
+        let roomOrLobby
+
         return (
             <div className="AppMain">
                 <NameIndicator Name = {this.props.Name} OpenNamePopUp = {this.OpenNamePopUp}/>
-                
-                {PopUp}
+                <ChatRoomList/>
+                {popUp}
             </div>
         )
     }
@@ -38,7 +48,9 @@ class Application extends Component {
 
 const mapStateToProps = state => ({
     Name: state.Name,
-    PopUpOpen: state.PopUpOpen
+    PopUpOpen: state.PopUpOpen,
+    Rooms: state.Rooms,
+    Room: state.Room
 });
   
 export default connect(mapStateToProps)(Application);

@@ -10,7 +10,7 @@ class NameIndicator extends Component {
         return (
             <div className = 'NameIndicator' onClick = {() => this.props.OpenNamePopUp(true)}>
                 <img src="../../../Data/avatar.png" width="15" height="15"/>
-                <div>{this.props.Name}</div>
+                <div>{this.props.name}</div>
             </div>
         )
 
