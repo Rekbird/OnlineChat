@@ -16,7 +16,8 @@ const reducer = (
       state = { ...state, 
         User: action.user, 
         Name: action.user.Name,
-        Rooms: action.rooms
+        Rooms: action.rooms,
+        Error: null
       }
       break
     
@@ -25,7 +26,8 @@ const reducer = (
         User: action.user, 
         Name: action.user.Name,
         Rooms: action.rooms,
-        Room: action.room
+        Room: action.room,
+        Error: null
       }
       break
 
@@ -33,7 +35,8 @@ const reducer = (
       state = { ...state, 
         Room: action.room,
         Rooms: action.rooms,
-        PopUpVisible: false
+        PopUpVisible: false,
+        Error: null
       }
       break
 
@@ -41,6 +44,14 @@ const reducer = (
       state = { ...state, 
         Room: action.room,
         PopUpVisible: false
+      }
+      console.log('REDUCER UPDATED ROOM')
+      break
+
+    case 'UPDATE_ROOMS_CLEAR_ROOM':
+      state = { ...state, 
+        Room: null,
+        Rooms: action.rooms
       }
       break
     
@@ -55,6 +66,12 @@ const reducer = (
 
     case 'VISIBLE_NAMEPOPUP':
       state = { ...state, PopUpVisible: action.PopUpVisible }
+      break
+
+    case 'CLEAR_ROOM':
+      state = { ...state, 
+        Room: null
+      }
       break
 
     default:

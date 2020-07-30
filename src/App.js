@@ -5,7 +5,7 @@ import {
     Switch,
     Route,
     Redirect,
-    useParams
+    useLocation
   } from "react-router-dom"
 import { 
     CreateUser,
@@ -18,8 +18,8 @@ import './App.scss'
 import NamePopUp from './Components/NamePopUp/NamePopUp.js'
 import NameIndicator from './Components/NameIndicator/NameIndicator.js'
 import ChatRoomList from './Components/ChatRoomList/ChatRoomList.js'
-import ChatRoom from './Components/ChatRoom/Chatroom.js'
-
+import ChatRoom from './Components/ChatRoom/Chatroom.js'  
+import { rangeRight } from 'lodash';
 
 class Application extends Component {
     constructor(props) {
@@ -38,7 +38,7 @@ class Application extends Component {
         if (!_.isEmpty(this.props.Rooms)) {
             let key = 0
             rooms = this.props.Rooms.map(item => 
-                <Route path={'/' + key} key= {++key}>
+                <Route path={'/' + item.Name} key= {++key}>
                     <ChatRoom lightRoom = {item}/>
                 </Route>
                 )
@@ -47,7 +47,7 @@ class Application extends Component {
         let popUp = !this.props.CurrentUser ? <NamePopUp showCancel = {false} HandleNameChange = {this.HandleNameChange}/> : null
         let lobby = 
             <div className="AppMain">
-                <h1>HELLO, {this.props.Name}</h1>
+                <h1>Welcome, {this.props.Name}</h1>
                 <ChatRoomList/>
                 {popUp}
             </div>
@@ -61,17 +61,15 @@ class Application extends Component {
             <Router>
                 <Switch>
                     {rooms}
-                    <Route exact path='/'>
+                    <Route exact path="/">
                         {lobby}
-                    </Route>
-                    <Route path= '*'>
-                        <Redirect to= '/'/>
                     </Route> 
                 </Switch>
             </Router>
         )
     }
 }
+
 
 const mapStateToProps = state => ({
     Name: state.Name,

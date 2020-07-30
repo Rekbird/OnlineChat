@@ -26,7 +26,7 @@ class NamePopUp extends Component {
 
     render() {
         let CancelButton = this.props.showCancel ? <button onClick = {() => this.HandleButtonClick('cancel')}>Cancel</button> : null
-        let errorMessage = !!this.props.ErrorMessage ? null : <div>{this.props.ErrorMessage}</div>
+        let errorMessage = !this.props.ErrorMessage ? null : <div className='ErrorMessage'>{this.props.ErrorMessage}</div>
         return (
             <div className = "modal">
                 <div className='NamePopUp'>

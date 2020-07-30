@@ -1,11 +1,13 @@
 import React, {Component} from 'react'
 import './ChatRoom.scss'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { 
     EnterRoom,
-    CreateUserInRoom
+    LeaveRoom,
+    SendMessage
 } from '../../sockets.js'
-import NamePopUp from '../NamePopUp/NamePopUp.js'
+import ChatMessage from './ChatMessage.js'
 
 const _ = require('lodash');
 
@@ -13,32 +15,58 @@ class ChatRoom extends Component {
     constructor(props) {
         super(props)
         this.CurrentUser = this.props.CurrentUser
+        this.HandleLeavingRoom = this.HandleLeavingRoom.bind(this)
+        this.HandleSendingMessage = this.HandleSendingMessage.bind(this)
+        this.newMessage
     }
 
-    HandleNameChange = (name, roomName) => {
-        if (!!name) {
-            CreateUserInRoom(name, roomName);
-        }
-   }
+    HandleLeavingRoom = () => {
+        LeaveRoom(this.CurrentUser, this.props.Room.Name)
+    }
+
+    HandleSendingMessage = () => {
+        SendMessage(this.CurrentUser, this.props.Room.Name, this.newMessage)
+    }
+
+    HandleInputChange = (e) => {
+        this.newMessage = e.target.value
+    }
 
     render() {
-        let chatRoom = <div>Fetching some data...</div>
-        let popUp = !this.CurrentUser ? <NamePopUp showCancel = {false} HandleNameChange = {this.HandleNameChange}/> : null
+        let memberList
+        let messages
         if (!!this.props.Room && !!this.props.Room.Members) {
             let key = 0
-            let memberList = this.props.Room.Members.map(item => item.Name == this.CurrentUser.Name ? <li key= {++key}>{item.Name} (You)</li> : <li key= {++key}>{item.Name}</li>)
-            chatRoom = <ul>{memberList}</ul>
+            memberList = this.props.Room.Members.map(item => 
+                <li className={item.Name == this.CurrentUser.Name ? 'YourUser' : 'OtherUsers'} key= {++key}>{item.Name}</li>)
+            
+            key = 0
+            if(!!this.props.Room.Messages) messages = this.props.Room.Messages.map(item => 
+                <ChatMessage key= {++key} userName= {this.CurrentUser.Name} message= {item}/>)
+
+            return (
+                <div className= 'RoomMain'>
+                    <div className='Header'>
+                        <h2>{this.props.lightRoom.Name}</h2>
+                        <button onClick= {this.HandleLeavingRoom}>Back to Lobby</button>
+                    </div>
+                    <div className= 'ChatAndUsers'>
+                        <ul>{memberList}</ul>
+                        <div>
+                            <ul className= 'Messages'>{messages}</ul>
+                            <input className= 'Textbox' type= 'text' maxLength= '200' onChange= {this.HandleInputChange}/> 
+                            <button onClick= {this.HandleSendingMessage}>Send</button>
+                        </div>
+                    </div>
+                </div>
+            )
         } else {
-            chatRoom = <div>Fetching some data...</div>
+            return (
+                <div>
+                    <Redirect to='/'/>
+                </div>
+            )
         }
-        
-        return (
-            <div>
-                <h2>{this.props.lightRoom.Name}</h2>
-                {chatRoom}
-                {popUp}
-            </div>
-        )
     }
 
     //Requesting room info if user came from lobby

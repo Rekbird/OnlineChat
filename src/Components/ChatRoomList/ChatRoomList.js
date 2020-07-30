@@ -25,7 +25,7 @@ class ChatRoomList extends Component {
 
     CreateNewRoom = (roomName) => {
         if (!!roomName) CreateRoom(roomName, this.props.CurrentUser)
-        else this.OpenNamePopUp(false)
+        else this.VisibleNamePopUp(false)
     }
 
     VisibleNamePopUp = (isVisible) => {
@@ -48,7 +48,7 @@ class ChatRoomList extends Component {
                 <Link to={'/' + room.Name} key= {++key}>
                     <div className = 'Room' >
                         <h3>{room.Name}</h3>
-                        <span>{room.Members.length} Members</span>
+                        <span>Members: {room.Members}</span>
                     </div>
                 </Link>
             )

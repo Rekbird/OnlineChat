@@ -27,28 +27,30 @@ const configureSocket = dispatch => {
     dispatch({type: 'ROOM_REJECTED', error: error})
   })
 
-  socket.on('NEW_ROOM', rooms => {
+  socket.on('ROOMS_CHANGED', rooms => {
     dispatch({type: 'ALL_ROOMS_UPDATE', rooms: rooms})
   })
 
-  socket.on('NEW_USER_IN_ROOM', room => {
+  socket.on('SOMEONE_ENTERED_ROOM', room => {
+    console.log('SOMEONE_ENTERED_ROOM')
     dispatch({type: 'ROOM_UPDATE', room: room})
-  })
-
-  socket.on('USER_JOINED_ROOM', rooms => {
-    dispatch({type: 'ALL_ROOMS_UPDATE', rooms: rooms})
   })
 
   socket.on('USER_ENTERED_ROOM', room => {
     dispatch({type: 'ROOM_UPDATE', room: room})
   })
 
-  socket.on('USER_LEFT_ROOM', room => {
+  socket.on('SOMEONE_LEFT_ROOM', room => {
     dispatch({type: 'ROOM_UPDATE', room: room})
   })
 
-  socket.on('USER_LEFT_SERVER', rooms => {
-    dispatch({type: 'ALL_ROOMS_UPDATE', rooms: rooms})
+  socket.on('USER_LEFT_ROOM', rooms => {
+    dispatch({type: 'UPDATE_ROOMS_CLEAR_ROOM', rooms: rooms})
+  })
+
+  socket.on('USER_SENT_MESSAGE', room => {
+    console.log('USER_SENT_MESSAGE')
+    dispatch({type: 'ROOM_UPDATE', room: room})
   })
 
   return socket;
@@ -66,7 +68,7 @@ export const EnterRoom = (user, roomName) => socket.emit('USER_ENTERING_ROOM', u
 
 export const LeaveRoom = (user, roomName) => socket.emit('USER_LEAVING_ROOM', user, roomName)
 
-export const SendMessage = (user, room, message) => socket.emit('USER_SENDING_MESSAGE', user, room, message)
+export const SendMessage = (user, roomName, messageText) => socket.emit('USER_SENDING_MESSAGE', user, roomName, messageText)
 
 
 export default configureSocket
