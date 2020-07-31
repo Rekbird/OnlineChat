@@ -13,6 +13,7 @@ class NamePopUp extends Component {
         super(props)
         this.HandleButtonClick = this.HandleButtonClick.bind(this)
         this.InputChange = this.InputChange.bind(this)
+        this.HandleKeyPress = this.HandleKeyPress.bind(this)
         this.NewName
     }
 
@@ -24,6 +25,12 @@ class NamePopUp extends Component {
         this.NewName = e.target.value
     }
 
+    HandleKeyPress = (e) => {
+        if (e.keyCode == 13) {
+            document.getElementById("SendButton").click()
+        }
+    }
+
     render() {
         let CancelButton = this.props.showCancel ? <button onClick = {() => this.HandleButtonClick('cancel')}>Cancel</button> : null
         let errorMessage = !this.props.ErrorMessage ? null : <div className='ErrorMessage'>{this.props.ErrorMessage}</div>
@@ -31,10 +38,10 @@ class NamePopUp extends Component {
             <div className = "modal">
                 <div className='NamePopUp'>
                     <h3>Choose a name</h3>
-                    <input type='text' maxLength="20" onChange = {this.InputChange}/>
+                    <input type='text' maxLength="20" onKeyUp= {this.HandleKeyPress} onChange = {this.InputChange}/>
                     {errorMessage}
                     <div>
-                        <button onClick = {() => this.HandleButtonClick('accept')}>Accept</button>
+                        <button id= 'SendButton' onClick = {() => this.HandleButtonClick('accept')}>Accept</button>
                         {CancelButton}
                     </div>
                 </div>

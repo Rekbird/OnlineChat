@@ -1,0 +1,27 @@
+.ChatMessage {
+    width: auto;
+    height: auto;
+    display: flex;
+    margin-top: 10px;
+    flex-direction: column;
+    justify-content: end;
+} 
+
+.MessageSignOff {
+    padding: 2px;
+    font-family: Comfortaa;
+    font-weight: bold;
+    font-size: 14px;
+    color: #6e6e6e;
+}
+
+.MessageText {
+    border-radius: 5px;
+    padding: 3px;
+    padding-right: 5px;
+    border: none;
+    color: #585858;
+    background-color: #56CCF2;
+    font-family: SF Pro Text;
+    font-size: 14px;
+}

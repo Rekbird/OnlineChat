@@ -1,0 +1,145 @@
+.RoomMain {
+    margin-top: 10%;
+    height: 60%;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    Button {
+        height: 30px;
+        width: 120px;
+        background: transparent linear-gradient(238deg, #2F80ED 0%, #56CCF2 100%) 0% 0% no-repeat padding-box;
+        border-radius: 26px;
+        border: 0px;
+        margin: 5px;
+        opacity: 1;
+        text-align: center;
+        font-family: SF Pro Text;
+        font-size: 14px;
+        letter-spacing: 0px;
+        color: #FFFFFF;
+        opacity: 1;
+        align-self: flex-end;
+        outline: none;
+        transition: 0.5s;
+    
+        &:hover {
+            transition: 0.5s;
+            box-shadow:0 0 0 0.2rem rgba(26, 101, 161, 0.25);
+        }
+        
+        &:active {
+            box-shadow:0 0 0 0.2rem rgba(17, 63, 100, 0.63);
+            transition: ease-out;
+        }
+    }
+}
+
+.Header {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    margin-top: 5px;
+
+    h2 {
+        width: auto;
+        margin: 0px;
+        padding-left: 5px;
+        font-family: Comfortaa;
+        font-weight: bold;
+        font-size: 20px;
+        color: #2F80ED;
+        text-align: left;
+    }
+}
+
+.ChatAndUsers {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+
+    .Members {
+        width: 25%;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        border:1px solid #2F80ED;
+
+        ul {
+            list-style: none;
+            margin: 0px;
+            padding-left: 10px;
+            overflow: auto;
+        }
+
+        h3 {
+            padding: 2px;
+            margin-bottom: 0px;
+            margin-top: 0px;
+            font-family: Comfortaa;
+            font-weight: bold;
+            font-size: 18px;
+            color: #2F80ED;
+        }
+
+        .YourUser {
+            padding: 2px;
+            font-family: Comfortaa;
+            font-weight: bold;
+            font-size: 16px;
+            color: #2F80ED;
+        }
+
+        .OtherUsers {
+            padding: 2px;
+            font-family: Comfortaa;
+            font-weight: bold;
+            font-size: 16px;
+            color: #6e6e6e;
+        }
+    }
+
+    .Chat {
+        width: 75%;
+        display: flex;
+        flex-direction: column;
+        border:1px solid #2F80ED;
+        margin-left: 1px;
+        padding: 10px;
+        justify-content: space-between;
+
+        .Messages {
+            display: flex;
+            flex-direction: column-reverse;
+            height: 85%;
+            margin: 0px 0px 10px 0px;
+            padding: 0px;
+            overflow-y: auto;
+        }
+
+        .Textbox {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 7%;
+
+            input {
+                width: 100%;
+                height: 20px;
+                border: 1px solid #575757;
+                caret-color: #2F80ED;
+                font-family: SF Pro Text;
+                font-size: 14px;
+            }
+        }
+    }
+}

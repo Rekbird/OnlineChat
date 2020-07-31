@@ -32,7 +32,6 @@ const configureSocket = dispatch => {
   })
 
   socket.on('SOMEONE_ENTERED_ROOM', room => {
-    console.log('SOMEONE_ENTERED_ROOM')
     dispatch({type: 'ROOM_UPDATE', room: room})
   })
 
@@ -49,7 +48,6 @@ const configureSocket = dispatch => {
   })
 
   socket.on('USER_SENT_MESSAGE', room => {
-    console.log('USER_SENT_MESSAGE')
     dispatch({type: 'ROOM_UPDATE', room: room})
   })
 

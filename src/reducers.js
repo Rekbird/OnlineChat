@@ -45,7 +45,6 @@ const reducer = (
         Room: action.room,
         PopUpVisible: false
       }
-      console.log('REDUCER UPDATED ROOM')
       break
 
     case 'UPDATE_ROOMS_CLEAR_ROOM':

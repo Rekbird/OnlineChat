@@ -39,7 +39,9 @@ class Application extends Component {
             let key = 0
             rooms = this.props.Rooms.map(item => 
                 <Route path={'/' + item.Name} key= {++key}>
-                    <ChatRoom lightRoom = {item}/>
+                    <div className="AppMain">
+                        <ChatRoom lightRoom = {item}/>
+                    </div>
                 </Route>
                 )
         }

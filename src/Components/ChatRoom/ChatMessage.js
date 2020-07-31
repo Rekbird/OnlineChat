@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import './ChatMessage.scss'
 
 class ChatMessage extends Component {
     constructor(props) {
@@ -6,11 +7,12 @@ class ChatMessage extends Component {
     }
 
 
+
     render() {
         return (
-            <div>
-                <span>{this.props.message.SentBy} {this.props.message.TimeStamp}</span>
-                <span>{this.props.message.Text}</span>
+            <div className= 'ChatMessage'>
+                <span className= 'MessageSignOff'>{this.props.message.SentBy} {this.props.message.TimeStamp}</span>
+                <span className= 'MessageText'>{this.props.message.Text}</span>
             </div>
         )
     }

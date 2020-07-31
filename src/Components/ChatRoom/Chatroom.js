@@ -17,6 +17,7 @@ class ChatRoom extends Component {
         this.CurrentUser = this.props.CurrentUser
         this.HandleLeavingRoom = this.HandleLeavingRoom.bind(this)
         this.HandleSendingMessage = this.HandleSendingMessage.bind(this)
+        this.HandleKeyPress = this.HandleKeyPress.bind(this)
         this.newMessage
     }
 
@@ -25,11 +26,19 @@ class ChatRoom extends Component {
     }
 
     HandleSendingMessage = () => {
-        SendMessage(this.CurrentUser, this.props.Room.Name, this.newMessage)
+        if (!!this.newMessage) SendMessage(this.CurrentUser, this.props.Room.Name, this.newMessage)
+        document.getElementById("MessageInput").value = "";
+        this.newMessage = null;
     }
 
     HandleInputChange = (e) => {
         this.newMessage = e.target.value
+    }
+
+    HandleKeyPress = (e) => {
+        if (e.keyCode == 13) {
+            document.getElementById("SendButton").click()
+        }
     }
 
     render() {
@@ -41,21 +50,28 @@ class ChatRoom extends Component {
                 <li className={item.Name == this.CurrentUser.Name ? 'YourUser' : 'OtherUsers'} key= {++key}>{item.Name}</li>)
             
             key = 0
-            if(!!this.props.Room.Messages) messages = this.props.Room.Messages.map(item => 
-                <ChatMessage key= {++key} userName= {this.CurrentUser.Name} message= {item}/>)
-
+            if(!!this.props.Room.Messages) {
+            let sortedMessages = this.props.Room.Messages
+            messages = sortedMessages.reverse().map(item => 
+                <ChatMessage key= {++key} message= {item}/>)
+            }
             return (
                 <div className= 'RoomMain'>
                     <div className='Header'>
-                        <h2>{this.props.lightRoom.Name}</h2>
+                        <h2>Room: {this.props.lightRoom.Name}</h2>
                         <button onClick= {this.HandleLeavingRoom}>Back to Lobby</button>
                     </div>
                     <div className= 'ChatAndUsers'>
-                        <ul>{memberList}</ul>
-                        <div>
+                        <div className='Members'>
+                            <h3>Members: </h3>
+                            <ul>{memberList}</ul>
+                        </div>
+                        <div className= 'Chat'>
                             <ul className= 'Messages'>{messages}</ul>
-                            <input className= 'Textbox' type= 'text' maxLength= '200' onChange= {this.HandleInputChange}/> 
-                            <button onClick= {this.HandleSendingMessage}>Send</button>
+                            <div className= 'Textbox'>
+                                <input id= 'MessageInput' type= 'text' maxLength= '200' onKeyUp= {this.HandleKeyPress} onChange= {this.HandleInputChange}/> 
+                                <button id= 'SendButton' onClick= {this.HandleSendingMessage}>Send</button>
+                            </div>
                         </div>
                     </div>
                 </div>

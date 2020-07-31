@@ -66,6 +66,7 @@ io.on('connection', socket => {
       let newUser = CreateNewUser(name, null, socket.id);
       users.push(newUser);
       lobby.push(newUser);
+      socket.join('lobby')
 
       socket.emit('USER_CREATED', newUser, RoomsLightInfo(rooms));
     } else {
@@ -78,7 +79,7 @@ io.on('connection', socket => {
     if (CheckForUniqueness('user', name, users)) {
       let targetRoom = _.find(rooms, item => item.Name == roomName);
 
-      !_.isEmpty(lobby) && socket.broadcast.to(_.map(lobby, item => item.SocketId)).emit('USER_JIONED_ROOM', RoomsLightInfo(rooms));
+      socket.to('lobby').emit('USER_JIONED_ROOM', RoomsLightInfo(rooms));
       socket.emit('USER_CREATED_FROM_LINK', CreateNewUser(name, targetRoom, socket.id), targetRoom);
     } else {
       socket.emit('USERNAME_REJECTED', 'This name is already in use');
@@ -92,9 +93,11 @@ io.on('connection', socket => {
       rooms.push(newRoom);
       _.remove(lobby, item => item.SocketId === user.SocketId);
       _.find(users, item => item.Name == user.Name).Location = newRoom.Name;
+      socket.leave('lobby');
+      socket.join(roomName);
 
       socket.emit('ROOM_CREATED', newRoom, RoomsLightInfo(rooms));
-      if (!_.isEmpty(lobby)) socket.broadcast.to(_.map(lobby, item => item.SocketId)).emit('ROOMS_CHANGED', RoomsLightInfo(rooms));
+      socket.to('lobby').emit('ROOMS_CHANGED', RoomsLightInfo(rooms));
     } else {
       socket.emit('ROOM_REJECTED', 'This name is already in use');
     }
@@ -106,12 +109,12 @@ io.on('connection', socket => {
     _.remove(lobby, item => item.SocketId === user.SocketId);
     userRoom.Members.push(user);
     _.find(users, item => item.Name == user.Name).Location = userRoom.Name;
-    console.log('USER_ENTERING_ROOM');
-    console.log(lobby);
-    console.log(userRoom);
-    console.log('-------------------');
-    !_.isEmpty(userRoom.Members) && socket.broadcast.to(_.map(userRoom.Members, item => item.SocketId)).emit('SOMEONE_ENTERED_ROOM', userRoom);
-    !_.isEmpty(lobby) && socket.broadcast.to(_.map(lobby, item => item.SocketId)).emit('ROOMS_CHANGED', RoomsLightInfo(rooms));
+    socket.leave('lobby');
+    socket.join(roomName);
+
+
+    if (!_.isEmpty(userRoom.Members)) socket.to(roomName).emit('SOMEONE_ENTERED_ROOM', userRoom);
+    socket.to('lobby').emit('ROOMS_CHANGED', RoomsLightInfo(rooms));
     socket.emit('USER_ENTERED_ROOM', userRoom);
   });
 
@@ -121,12 +124,11 @@ io.on('connection', socket => {
     _.remove(userRoom.Members, item => item.SocketId === user.SocketId);
     lobby.push(user);
     _.find(users, item => item.Name == user.Name).Location = 'lobby';
-    console.log('USER_LEAVING_ROOM');
-    console.log(lobby);
-    console.log(userRoom);
-    console.log('-------------------');
-    !_.isEmpty(userRoom.Members) && socket.broadcast.to(_.map(userRoom.Members, item => item.SocketId)).emit('SOMEONE_LEFT_ROOM', userRoom);
-    !_.isEmpty(lobby) && socket.broadcast.to(_.map(lobby, item => item.SocketId)).emit('ROOMS_CHANGED', RoomsLightInfo(rooms));
+    socket.leave(roomName);
+    socket.join('lobby');
+
+    if (!_.isEmpty(userRoom.Members)) socket.to(roomName).emit('SOMEONE_LEFT_ROOM', userRoom);
+    socket.to('lobby').emit('ROOMS_CHANGED', RoomsLightInfo(rooms));
     socket.emit('USER_LEFT_ROOM', RoomsLightInfo(rooms));
   });
 
@@ -138,8 +140,7 @@ io.on('connection', socket => {
       TimeStamp: ParseDate(new Date()),
       Text: messageText
     });
-    socket.broadcast.to(_.map(userRoom.Members, item => item.SocketId)).emit('USER_SENT_MESSAGE', userRoom);
-    socket.emit('USER_SENT_MESSAGE', userRoom);
+    io.in(roomName).emit('USER_SENT_MESSAGE', userRoom);
   });
 
   //When disconnected the client's name will be removed from server's list of users and from room he left
@@ -151,8 +152,8 @@ io.on('connection', socket => {
         let userRoom = _.find(rooms, item => item.Name == userToRemove.Location);
         _.remove(userRoom.Members, item => item.SocketId === userToRemove.SocketId);
 
-        !_.isEmpty(userRoom.Members) && socket.broadcast.to(_.map(userRoom.Members, item => item.SocketId)).emit('USER_LEFT_ROOM', userRoom);
-        !_.isEmpty(lobby) && socket.broadcast.to(_.map(lobby, item => item.SocketId)).emit('ROOMS_CHANGED', RoomsLightInfo(rooms));
+        !_.isEmpty(userRoom.Members) && socket.to(userRoom.Name).emit('SOMEONE_LEFT_ROOM', userRoom);
+        socket.to('lobby').emit('ROOMS_CHANGED', RoomsLightInfo(rooms));
 
       } else {
         _.remove(lobby, item => item.SocketId === userToRemove.SocketId);
