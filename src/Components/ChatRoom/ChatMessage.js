@@ -12,7 +12,7 @@ class ChatMessage extends Component {
         return (
             <div className= 'ChatMessage'>
                 <span className= 'MessageSignOff'>{this.props.message.SentBy} {this.props.message.TimeStamp}</span>
-                <span className= 'MessageText'>{this.props.message.Text}</span>
+                <p className= 'MessageText'>{this.props.message.Text}</p>
             </div>
         )
     }
